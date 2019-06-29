@@ -1,9 +1,9 @@
 "use strict"
 
-const getPrivileges = (type) =>{
+const getPrivileges = (role) =>{
 	let access = []
 
-	switch(access){
+	switch(role){
 		case 'aspirante':
 			access.push({
 				name: 'listCourses',
@@ -18,20 +18,21 @@ const getPrivileges = (type) =>{
 		case 'interesado':
 			break
 		case 'coordinador':
-			access.push({
-				name: 'listCourses',
-				path: '/listCourses',
-				caption: 'Ver Cursos'
-			})
+			access.push(
+				{
+					'name': 'create',
+					'path': '/create',
+					'caption': 'Abrir Curso'
+				},{
+					name: 'listCourses',
+					path: '/listCourses',
+					caption: 'Ver Cursos'
+				})
 			break
 	}
 
 /*	if(type === 'coordinador'){
-		access.push({
-				'name': 'create',
-				'path': '/create',
-				'caption': 'Abrir Curso'
-			},
+		access.push(
 			{
 				'name': 'students',
 				'path': '/students',

@@ -9,27 +9,119 @@ const express = require('express'),
 	students = require('../students'),
 	//END REMOVE
 	Course = require('../models/course'),
-	User = require('../models/user')
+	User = require('../models/user'),
+	bcrypt = require('bcrypt'),
+	privileges = require('../privileges')
+	session = require('express-session'),
 
 require('../helpers')
 
 //hbs
 app.set('view engine', 'hbs')
    .set('views', dirViews)
+	//Session
+	.use(session({
+		secret: 'anyName',
+		resave: false,
+		saveUninitialized: true
+	}))
 
 hbs.registerPartials(partialsDir)
 
+//middleware
+app.use((req, res, next)=>{
+	if(req.session.user){
+		res.locals.session = true
+		res.locals.name = req.session.name
+		res.locals.privileges = req.session.privileges
+		res.locals.role = req.session.role
+	} else {
+		if(req.originalUrl !== '/login' && req.url !== "/register"){
+			return res.render('login',{
+				pageTitle: 'Iniciar sesión'
+			})
+		}
+	}
+	next()
+})
+
 // Methods
-app.get('/', (req, res) =>{
-	res.render('login',{
-		pageTitle: 'Iniciar sesión'
-	})
-	/*res.render('index', {
+app.get('/home', (req, res)=>{
+	res.render('index', {
 		pageTitle: 'Gestor de Cursos',
 		developers: [
 			'Neiro Torres'
 		]
-	})*/
+	})
+})
+.get('/', (req, res) =>{
+	// CREATE ROOT USER IF DOESN'T EXIST
+	User.findOne({id: 1, role: 'coordinador'},(err, result)=>{
+		if(err){
+			console.log(err)
+		} else {
+			if(!result){
+				let newUser = new User({
+					name: 'Admin',
+					id: 1,
+					email: 'admin@mailinator.com',
+					password: bcrypt.hashSync('nimda', 10),
+					phone: 1234567,
+					role: 'coordinador'
+				})
+
+				newUser.save((err, result)=>{
+					if(err){
+						return console.log("Unable to create root user", err)
+					}
+
+					console.log("Root user created, user: " + result.email + ", password: nimda")
+				})
+			}
+		}
+	})
+
+	res.render('login',{
+		pageTitle: 'Iniciar sesión'
+	})
+})
+.post('/login', (req, res)=>{
+	User.findOne({email: req.body.username}, (err, result)=>{
+		if(err){
+			console.log(err)
+			return res.render('login', {
+				response: {
+					message: 'Error conectando con la base de datos',
+					success: 'fail'
+				}
+			})
+		}
+
+		if(result){
+			if(bcrypt.compareSync(req.body.password, result.password)){
+				req.session.user = result._id
+				req.session.name = result.name
+				req.session.privileges = privileges.getPrivileges(result.role)
+				req.session.role = result.role
+
+				res.redirect('home')
+			} else {
+				res.render('login', {
+					response: {
+						message: 'Las credenciales son incorrectas',
+						success: 'fail'
+					}
+				})
+			}
+		} else {
+			res.render('login', {
+				response: {
+					message: 'Las credenciales son incorrectas',
+					success: 'fail'
+				}
+			})
+		}
+	})
 })
 .get('/register', (req, res)=>{
 		res.render('register', {
@@ -37,14 +129,21 @@ app.get('/', (req, res) =>{
 			pageTitle: 'Registrar nuevo usuario',
 		})		
 })
+.get('/logout', (req, res)=>{
+	req.session.user = undefined
+	req.session.name = undefined
+	req.session.privileges = undefined
+
+	res.redirect('/')
+})
 .post('/register', (req, res)=>{
 	let newUser = new User({
 			name: req.body.name,
 			id: parseInt(req.body.id),
 			email: req.body.email,
-			password: req.body.password,
+			password: bcrypt.hashSync(req.body.password, 10),
 			phone: parseInt(req.body.phone),
-			type: 'aspirante'
+			role: 'aspirante'
 		})
 
 	newUser.save((err, result)=>{

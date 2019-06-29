@@ -25,7 +25,7 @@ const mongoose = require('mongoose'),
 			type: Number,
 			required: true
 		},
-		type:{
+		role:{
 			type: String,
 			required: true,
 			enum: {values: ['coordinador', 'aspirante', 'interesado']}
