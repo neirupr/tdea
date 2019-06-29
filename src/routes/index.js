@@ -4,8 +4,12 @@ const express = require('express'),
 	hbs = require ('hbs'),
 	dirViews = path.join(__dirname, '../../template/views'),
 	partialsDir = path.join(__dirname,'../../template/partials'),
+	// REMOVE
 	courses = require('../courses'),
-	students = require('../students')
+	students = require('../students'),
+	//END REMOVE
+	Course = require('../models/course'),
+	User = require('../models/user')
 
 require('../helpers')
 
@@ -17,12 +21,63 @@ hbs.registerPartials(partialsDir)
 
 // Methods
 app.get('/', (req, res) =>{
-	res.render('index', {
+	res.render('login',{
+		pageTitle: 'Iniciar sesión'
+	})
+	/*res.render('index', {
 		pageTitle: 'Gestor de Cursos',
 		developers: [
 			'Neiro Torres'
 		]
+	})*/
+})
+.get('/register', (req, res)=>{
+		res.render('register', {
+			page: 'register',
+			pageTitle: 'Registrar nuevo usuario',
+		})		
+})
+.post('/register', (req, res)=>{
+	let newUser = new User({
+			name: req.body.name,
+			id: parseInt(req.body.id),
+			email: req.body.email,
+			password: req.body.password,
+			phone: parseInt(req.body.phone),
+			type: 'aspirante'
+		})
+
+	newUser.save((err, result)=>{
+		let response
+		if(err){
+			response = {
+				message: err.errors.id.message,
+				success: 'fail'
+			}
+		} else {
+			response = {
+				message: 'El usuario <strong>' + result.name + '</strong> se ha registrado correctamente! Por favor <a href="/">inicia sesión</a>',
+				success: 'success'
+			} 
+		}
+
+
+		res.render('register', {
+			page: 'register',
+			pageTitle: 'Registrar nuevo usuario',
+			response: response
+		})
 	})
+
+	/*let response = users.createUser(newUser)
+
+	res.render('newUser', {
+		page: 'newuser',
+		pageTitle: 'Registrar nuevo usuario',
+		response: response,
+		user: currentUser,
+		
+	})*/	
 })
 .get('/listCourses', (req, res)=>{
 	res.render('listCourses',{
