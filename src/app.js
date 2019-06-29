@@ -8,7 +8,18 @@ const express = require('express'),
 	partialsDir = path.join(__dirname,'../partials'),
 	bodyParser = require('body-parser'),
 	courses = require('./courses'),
-	students = require('./students')
+	students = require('./students'),
+
+	//Mongoose connect
+	mongoose = require('mongoose')
+
+	mongoose.connect('mongodb://localhost:27017/keyrus', {useNewUrlParser: true}, (err, result)=>{
+		if(err){
+			return console.log("Unable to connect MongoDB, please check server")
+		}
+
+		console.log("Successfully connected to MongoDB")
+	})
 
 require('./helpers')
 hbs.registerPartials(partialsDir)
