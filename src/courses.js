@@ -36,7 +36,7 @@ const create = (ecourse) =>{
 		save()
 		return {message: 'Se ha creado el curso!', success: 'success'}
 	} else {
-		return {message: 'El curso ya existe', success: 'fail'}
+		return {message: 'Ya existe un curso con id ' + ecourse.id, success: 'fail'}
 	}
 }
 
@@ -46,7 +46,7 @@ const close = (id) =>{
 	coursesList[coursesList.indexOf(course)].available = false
 	save()
 
-	return {message: 'Se desactivó el curso ' + course.name + ' exitosamente', success: 'success'}
+	return {message: 'Se desactivó el curso <strong>' + course.name + '</strong> exitosamente', success: 'success'}
 }
 
 module.exports = {create, close, getCourses}

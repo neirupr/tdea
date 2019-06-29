@@ -7,14 +7,14 @@
 	<div class="col-2 p-3 courses__list__header__cell">Disponible</div>
 </div>
 {{#each courses}}
-	<div class="row mx-0 course__list__item" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
-		<div class="col-4 p-3">{{name}}</div>
-		<div class="col-4 p-3">{{description}}</div>
-		<div class="col-2 p-3">{{price}}</div>
-		<div class="col-2 p-3">
-			{{#if available}}Sí{{else}}No{{/if}}
-		</div>
-		{{#if available}}
+	{{#if available}}
+		<div class="row mx-0 course__list__item" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
+			<div class="col-4 p-3">{{name}}</div>
+			<div class="col-4 p-3">{{description}}</div>
+			<div class="col-2 p-3">{{price}}</div>
+			<div class="col-2 p-3">
+				{{#if available}}Sí{{else}}No{{/if}}
+			</div>
 			<div class="col-12 px-0">
 				<div id="collapse-{{id}}" class="collapse multi-collapse" aria-labelledby="collapse-{{id}}">
 					<div class="row mx-0">
@@ -25,8 +25,8 @@
 					</div>
 				</div>
 			</div>
-		{{/if}}
-	</div>
+		</div>
+	{{/if}}
 {{/each}}
 
 {{>footer}}

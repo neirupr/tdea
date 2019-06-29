@@ -24,16 +24,16 @@ app.get('/', (req, res) =>{
 		]
 	})
 })
-.get('/view', (req, res)=>{
+.get('/listCourses', (req, res)=>{
 	res.render('listCourses',{
-		page: 'view',
+		page: 'listCourses',
 		pageTitle: 'Lista de Cursos',
 		courses: courses.getCourses()
 	})
 })
 .get('/create', (req, res)=>{
 	res.render('createCourse',{
-		page: 'create',
+		page: 'createCourse',
 		pageTitle: 'Abrir Curso'
 	})
 })
