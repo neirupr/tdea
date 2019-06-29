@@ -37,4 +37,6 @@ const mongoose = require('mongoose'),
 
 	Course = mongoose.model('Course', courseSchema)
 
+courseSchema.plugin(uniqueValidator)
+
 module.exports = Course

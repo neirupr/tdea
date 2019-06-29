@@ -28,10 +28,12 @@ const mongoose = require('mongoose'),
 		type:{
 			type: String,
 			required: true,
-			enum: {values: ['admin', 'aspirante', 'interesado', 'docente']}
+			enum: {values: ['coordinador', 'aspirante', 'interesado']}
 		}
 	}),
 
 	User = mongoose.model('User', userSchema)
+
+userSchema.plugin(uniqueValidator, {message: 'Ya existe un usuario con el id <strong>{VALUE}</strong>'})
 
 module.exports = User

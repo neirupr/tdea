@@ -1,0 +1,35 @@
+{{>header}}
+{{>messages}}
+{{name}}
+<form class="row" method="post" action="/register">
+	<div class="form-group col-12 col-md-6">
+		<label for="name">Nombre*</label>
+		<input type="text" class="form-control" id="name" name="name" placeholder="Nombre" required>
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="id">Identificación*</label>
+		<input type="number" class="form-control" id="id" name="id" placeholder="Identificación" required>
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="email">Correo electrónico*</label>
+		<input type="email" class="form-control" id="email" name="email" placeholder="Correo electrónico" required>
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="password">Contraseña*</label>
+		<input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="phone">Teléfono*</label>
+		<input type="number" class="form-control" id="phone" name="phone" placeholder="Teléfono" required>
+	</div>
+	<div class="col-12 d-flex justify-content-center">
+		<small class="form-text text-muted">Los campos con * son obligatorios</small>
+	</div>
+	<div class="col-12 text-center">
+		<button type="submit" class="btn btn-primary col-2">Registrar</button>
+		<a  class="btn btn-secondary col-2" href="/">Volver</a>
+	</div>
+</form>
+
+
+{{>footer}}
