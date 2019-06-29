@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Gestor de Cursos</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	{{>links}}
+</head>
+<body class="d-flex flex-column">
+	<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar component__header">
+		<a href="/">
+				<img src="/images/keyrus.png" alt="Keyrus Digital" class="logo">
+		</a>
+		<nav class="nav">
+			<nav class="nav nav-pills nav-fill">
+				<a class="nav-item nav-link {{isActive 'create' page}}" href="/create">Crear Curso</a>
+				<a class="nav-item nav-link {{isActive 'view' page}}" href="/view">Listar Cursos</a>
+				<a class="nav-item nav-link {{isActive 'subscribe' page}}" href="/subscribe">Inscribir</a>
+				<a class="nav-item nav-link {{isActive 'students' page}}" href="/students">Listar Inscritos</a>
+			</nav>
+		</nav>
+	</header>
+	<section class="container component__main">
+		<div class="component__title">{{pageTitle}}</div>

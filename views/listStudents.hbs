@@ -1,0 +1,32 @@
+{{>header}}
+{{>messages}}
+	
+<div class="row mx-0 table-bordered courses__list__header">
+	<div class="col-12 p-3 courses__list__header__cell">Cursos disponibles</div>
+</div>
+{{#each courses}}
+	{{#if available}}
+		<div class="row mx-0 course__list__item">
+			<div class="col-10 p-3 d-flex align-items-center">{{name}}</div>
+			<div class="col-2 p-3 text-right">
+				<button class="btn btn-primary"  data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
+					<i class="material-icons">list</i>
+				</button>
+				<form action="/students" method="post" class="d-inline">
+					<input type="number" value={{id}} class="d-none" name="id">
+					<button class="btn btn-dark" type="submit">
+						<i class="material-icons">lock</i>
+					</button>
+				</form>
+			</div>
+
+			<div class="col-12 px-0">
+				<div id="collapse-{{id}}" class="collapse multi-collapse" aria-labelledby="collapse-{{id}}">
+					{{{listStudents id ../students}}}
+				</div>
+			</div>
+		</div>
+	{{/if}}
+{{/each}}
+
+{{>footer}}
