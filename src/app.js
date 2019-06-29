@@ -19,10 +19,10 @@ const express = require('express'),
 	})
 
 app.use(bodyParser.urlencoded({extended:false}))
-	.use(express.static(publicDir))
+.use(express.static(publicDir))
 
-	//Routes
-	.use(require('./routes/index'))
+//Routes
+.use(require('./routes/index'))
 
 app.listen(3000, ()=>{
 	console.log('Escuchando en el puerto 3000')

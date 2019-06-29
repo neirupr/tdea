@@ -13,3 +13,4 @@
 
 ## Other indications
 - Go to localhost:3000
+- Root user: admin@mailinator.com/nimda

@@ -9,17 +9,26 @@
 </head>
 <body class="d-flex flex-column">
 	<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar component__header">
-		<a href="/">
+		<a href="/home">
 				<img src="/images/keyrus.png" alt="Keyrus Digital" class="logo">
 		</a>
 		<nav class="nav">
 			<nav class="nav nav-pills nav-fill">
-				<a class="nav-item nav-link {{isActive 'createCourse' page}}" href="/create">Crear Curso</a>
-				<a class="nav-item nav-link {{isActive 'listCourses' page}}" href="/listCourses">Ver Cursos</a>
-				<a class="nav-item nav-link {{isActive 'subscribe' page}}" href="/subscribe">Inscribirse</a>
-				<a class="nav-item nav-link {{isActive 'students' page}}" href="/students">Ver Inscritos</a>
+				{{#each privileges}}
+					<a class="nav-item nav-link {{isActive name ../page}}" href="{{path}}">{{caption}}</a>
+				{{/each}}
+<!-- 				<a class="nav-item nav-link {{isActive 'createCourse' page}}" href="/create">Crear Curso</a>
+<a class="nav-item nav-link {{isActive 'listCourses' page}}" href="/listCourses">Ver Cursos</a>
+<a class="nav-item nav-link {{isActive 'subscribe' page}}" href="/subscribe">Inscribirse</a>
+<a class="nav-item nav-link {{isActive 'students' page}}" href="/students">Ver Inscritos</a> -->
 			</nav>
 		</nav>
+		{{#if name}}
+			<div class="ml-auto">
+				<span>Bienvenido, {{name}}</span>
+				<a href="/logout">[Cerrar sesión]</a>
+			</div>
+		{{/if}}
 	</header>
 	<section class="container component__main">
 		<div class="component__title">{{pageTitle}}</div>
