@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/neirupr/GestorCursos.git"
+    "url": "git+https://github.com/neirupr/tdea.git"
   },
-  "author": "Andersson Villa, Gabriel Rodríguez, Neiro Torres",
+  "author": "Neiro Torres",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/neirupr/GestorCursos/issues"
+    "url": "https://github.com/neirupr/tdea/issues"
   },
-  "homepage": "https://github.com/neirupr/GestorCursos#readme",
+  "homepage": "https://github.com/neirupr/tdea#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",

@@ -21,8 +21,6 @@ app.use(bodyParser.urlencoded({extended:false}))
 	res.render('index', {
 		pageTitle: 'Gestor de Cursos',
 		developers: [
-			'Andersson Villa',
-			'Gabriel Rodríguez',
 			'Neiro Torres'
 		]
 	})
@@ -125,8 +123,6 @@ app.use(bodyParser.urlencoded({extended:false}))
 	res.render('index', {
 		pageTitle: 'Gestor de Cursos',
 		developers: [
-			'Andersson Villa',
-			'Gabriel Rodríguez',
 			'Neiro Torres'
 		]
 	})
