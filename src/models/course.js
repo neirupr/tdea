@@ -37,6 +37,6 @@ const mongoose = require('mongoose'),
 
 	Course = mongoose.model('Course', courseSchema)
 
-courseSchema.plugin(uniqueValidator)
+courseSchema.plugin(uniqueValidator, {message: 'Ya existe un curso con el id <strong>{VALUE}</strong>'})
 
 module.exports = Course

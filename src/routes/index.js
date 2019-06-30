@@ -192,23 +192,38 @@ app.get('/home', (req, res)=>{
 	})
 })
 .post('/create', (req, res)=>{
-	let course = {
-		name: req.body.name,
-		id: parseInt(req.body.id),
-		description: req.body.description,
-		price: parseFloat(req.body.price),
-		modality: req.body.modality,
-		intensity: parseFloat(req.body.intensity) || 0,
-		available: true,
-	}
+	let course = new Course({
+			name: req.body.name,
+			id: parseInt(req.body.id),
+			description: req.body.description,
+			price: parseFloat(req.body.price),
+			modality: req.body.modality,
+			intensity: parseFloat(req.body.intensity) || 0,
+			available: true,
+		})
 
-	let response = courses.create(course)
+	course.save((err, result)=>{
+		let response
+		if(err){
+			console.log(err)
+			response = {
+				message: err.errors.id.message,
+				success: 'fail'
+			}
+		} else {
+			response = {
+				message: 'Se creó el curso <strong>' + result.name + '</strong>',
+				success: 'success'
+			}
+		}
 
-	res.render('createCourse', {
-		page: 'create',
-		pageTitle: 'Abrir Curso',
-		response: response
+		res.render('createCourse',{
+			page: 'create',
+			pageTitle: 'Abrir Curso',
+			response: response
+		})
 	})
+
 })
 .get('/subscribe', (req, res)=>{
 	res.render('subscribe',{
