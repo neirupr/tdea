@@ -10,6 +10,7 @@ const express = require('express'),
 	//END REMOVE
 	Course = require('../models/course'),
 	User = require('../models/user'),
+	Subscription = require('../models/subscription')
 	bcrypt = require('bcrypt'),
 	privileges = require('../privileges')
 	session = require('express-session'),
@@ -135,7 +136,7 @@ app.get('/home', (req, res)=>{
 	req.session.user = undefined
 	req.session.name = undefined
 	req.session.privileges = undefined
-
+	
 	res.redirect('/home')
 })
 .post('/register', (req, res)=>{
@@ -241,28 +242,119 @@ app.get('/home', (req, res)=>{
 
 })
 .get('/subscribe', (req, res)=>{
-	res.render('subscribe',{
-		page: 'subscribe',
-		pageTitle: 'Inscribir Alumnos',
-		courses: courses.getCourses()
+	User.findById(req.session.user, (err, user)=>{
+		if(err){
+			console.log(err)
+			return res.render('subscribe',{
+				response:{
+					message: 'Hubo un problema accediendo la base de datos',
+					success: 'fail'
+				}
+			})
+		}
+
+		let name='', id='', email='', phone=''
+		if(user){
+			name = user.name
+			id = user.id
+			email = user.email
+			phone = user.phone
+		}
+
+		Course.find({}).exec((error, result)=>{
+			if(error){
+				console.log(error)
+			}
+
+			res.render('subscribe',{
+				page: 'subscribe',
+				pageTitle: 'Inscribirse en un Curso',
+				courses: result,
+				name: name,
+				id: id,
+				email: email,
+				phone: phone
+			})
+		})
 	})
 })
 .post('/subscribe', (req, res)=>{
-	let student = {
-		name: req.body.name,
-		id: parseInt(req.body.id),
-		email: req.body.email,
-		phone: parseInt(req.body.phone),
-		course: parseInt(req.body.course)
-	}
+	let subscription = new Subscription({
+			name: req.body.name,
+			id: parseInt(req.body.id),
+			email: req.body.email,
+			phone: parseInt(req.body.phone),
+			course: parseInt(req.body.course)
+		})
 
-	let response = students.create(student)
+	console.log(subscription)
 
-	res.render('subscribe',{
-		page: 'subscribe',
-		pageTitle: 'Inscribirse en un curso',
-		courses: courses.getCourses(),
-		response: response
+	Subscription.findOne({id: subscription.id, course: subscription.course}, (err, subs)=>{
+		let response
+
+		if(err){
+			response = {
+				message: err.errors,
+				success: 'fail'
+			}
+		}
+
+		if(subs){
+			response = {
+				message: 'Ya estás matriculado en este curso',
+				success: 'fail'
+			}
+		} else {
+			subscription.save((error, result)=>{
+				if(error){
+					console.log(error)
+					response = {
+						message: error,
+						success: 'fail'
+					}
+				} else {
+					response = {
+						message: 'Te has matriculado correctamente en el curso!',
+						success: 'success'
+					}
+				}
+			})
+		}
+
+		User.findById(req.session.user, (err, user)=>{
+			if(err){
+				console.log(err)
+				response = {
+					message: 'Hubo un problema accediendo la base de datos',
+					success: 'fail'
+				}
+			}
+
+			let name='', id='', email='', phone=''
+			if(user){
+				name = user.name
+				id = user.id
+				email = user.email
+				phone = user.phone
+			}
+
+			Course.find({}).exec((error, result)=>{
+				if(error){
+					console.log(error)
+				}
+
+				res.render('subscribe',{
+					page: 'subscribe',
+					pageTitle: 'Inscribirse en un Curso',
+					courses: result,
+					name: name,
+					id: id,
+					email: email,
+					phone: phone,
+					response: response
+				})
+			})
+		})
 	})
 })
 .get('/students', (req, res)=>{
