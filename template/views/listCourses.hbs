@@ -22,7 +22,13 @@
 							<div class="col-3 py-2 course__list__item__extra">Modalidad:</div>
 							<div class="col-3 py-2 course__list__item__extra__data">{{modality}}</div>
 							<div class="col-3 py-2 course__list__item__extra">Intensidad:</div>
-							<div class="col-3 py-2 course__list__item__extra__data">{{intensity}}</div>
+							<div class="col-3 py-2 course__list__item__extra__data">
+								{{#ifEquals intensity 0}}
+									-
+								{{else}}
+									{{intensity}}
+								{{/ifEquals}}
+							</div>
 						</div>
 					</div>
 				{{/if}}
@@ -45,7 +51,13 @@
 							<div class="col-3 py-2 course__list__item__extra">Modalidad:</div>
 							<div class="col-3 py-2 course__list__item__extra__data">{{modality}}</div>
 							<div class="col-3 py-2 course__list__item__extra">Intensidad:</div>
-							<div class="col-3 py-2 course__list__item__extra__data">{{intensity}}</div>
+							<div class="col-3 py-2 course__list__item__extra__data">
+								{{#ifEquals intensity 0}}
+									-
+								{{else}}
+									{{intensity}}
+								{{/ifEquals}}
+							</div>
 						</div>
 					</div>
 				</div>

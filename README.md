@@ -14,3 +14,4 @@
 ## Other indications
 - Go to localhost:3000
 - Root user: admin@mailinator.com/nimda
+- Please make sure your mongoDB is running on port 27017
