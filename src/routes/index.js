@@ -36,11 +36,13 @@ app.use((req, res, next)=>{
 		res.locals.privileges = req.session.privileges
 		res.locals.role = req.session.role
 	} else {
-		if(req.originalUrl !== '/login' && req.url !== "/register"){
+		/*if(req.originalUrl !== '/login' && req.url !== "/register"){
 			return res.render('login',{
 				pageTitle: 'Iniciar sesión'
 			})
-		}
+		}*/
+		res.locals.role = 'interesado'
+		res.locals.privileges = privileges.getPrivileges('interesado')
 	}
 	next()
 })
@@ -134,7 +136,7 @@ app.get('/home', (req, res)=>{
 	req.session.name = undefined
 	req.session.privileges = undefined
 
-	res.redirect('/')
+	res.redirect('/home')
 })
 .post('/register', (req, res)=>{
 	let newUser = new User({
@@ -179,10 +181,23 @@ app.get('/home', (req, res)=>{
 	})*/	
 })
 .get('/listCourses', (req, res)=>{
-	res.render('listCourses',{
-		page: 'listCourses',
-		pageTitle: 'Lista de Cursos',
-		courses: courses.getCourses()
+	Course.find({}).exec((err, result)=>{
+		if(err){
+			return res.render('listCourses',{
+				page: 'listCourses',
+				pageTitle: 'Lista de Cursos',
+				response: {
+					message: 'Problema al cargar los cursos',
+					success: 'fail'
+				}
+			})
+		}
+
+		res.render('listCourses',{
+			page: 'listCourses',
+			pageTitle: 'Lista de Cursos',
+			courses: result
+		})
 	})
 })
 .get('/create', (req, res)=>{

@@ -16,11 +16,16 @@ const getPrivileges = (role) =>{
 			})
 			break
 		case 'interesado':
+			access.push({
+				name: 'listCourses',
+				path: '/listCourses',
+				caption: 'Ver Cursos'
+			})
 			break
 		case 'coordinador':
 			access.push(
 				{
-					'name': 'create',
+					'name': 'createCourse',
 					'path': '/create',
 					'caption': 'Abrir Curso'
 				},{
