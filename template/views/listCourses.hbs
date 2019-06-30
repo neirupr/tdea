@@ -34,17 +34,13 @@
 				{{/if}}
 			</div>
 		</div>
-	{{/ifEquals}}
-	
-	{{#ifEquals ../role 'aspirante'}}
+	{{else}}
 		{{#if available}}
 			<div class="row mx-0 course__list__item" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
 				<div class="col-4 p-3">{{name}}</div>
 				<div class="col-4 p-3">{{description}}</div>
 				<div class="col-2 p-3">{{price}}</div>
-				<div class="col-2 p-3">
-					{{#if available}}Sí{{else}}No{{/if}}
-				</div>
+				<div class="col-2 p-3">Sí</div>
 				<div class="col-12 px-0">
 					<div id="collapse-{{id}}" class="collapse multi-collapse" aria-labelledby="collapse-{{id}}">
 						<div class="row mx-0">
@@ -63,6 +59,13 @@
 				</div>
 			</div>
 		{{/if}}
+	{{/ifEquals}}
+
+	{{#ifEquals ../role 'interesado'}}
+		<div class="alert alert-warning alert-dismissible fade show mt-4" role="alert">Si deseas inscribirte en nuestros cursos, por favor 
+			<a href="/">inicia sesión</a>. Si aún no tienes una cuenta 
+			<a href="/register">regístrate aquí</a>.
+		</div>
 	{{/ifEquals}}
 {{/each}}
 
