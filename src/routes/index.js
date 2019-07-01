@@ -4,10 +4,6 @@ const express = require('express'),
 	hbs = require ('hbs'),
 	dirViews = path.join(__dirname, '../../template/views'),
 	partialsDir = path.join(__dirname,'../../template/partials'),
-	// REMOVE
-	courses = require('../courses'),
-	students = require('../students'),
-	//END REMOVE
 	Course = require('../models/course'),
 	User = require('../models/user'),
 	Subscription = require('../models/subscription')
@@ -37,11 +33,6 @@ app.use((req, res, next)=>{
 		res.locals.privileges = req.session.privileges
 		res.locals.role = req.session.role
 	} else {
-		/*if(req.originalUrl !== '/login' && req.url !== "/register"){
-			return res.render('login',{
-				pageTitle: 'Iniciar sesión'
-			})
-		}*/
 		res.locals.role = 'interesado'
 		res.locals.privileges = privileges.getPrivileges('interesado')
 	}
@@ -169,17 +160,7 @@ app.get('/home', (req, res)=>{
 			pageTitle: 'Registrar nuevo usuario',
 			response: response
 		})
-	})
-
-	/*let response = users.createUser(newUser)
-
-	res.render('newUser', {
-		page: 'newuser',
-		pageTitle: 'Registrar nuevo usuario',
-		response: response,
-		user: currentUser,
-		
-	})*/	
+	})	
 })
 .get('/listCourses', (req, res)=>{
 	Course.find({}).exec((err, result)=>{
