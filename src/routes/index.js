@@ -137,7 +137,7 @@ app.get('/home', (req, res)=>{
 	req.session.name = undefined
 	req.session.privileges = undefined
 	
-	res.redirect('/home')
+	res.redirect('/')
 })
 .post('/register', (req, res)=>{
 	let newUser = new User({
@@ -398,43 +398,46 @@ app.get('/home', (req, res)=>{
 					success: 'success'
 				}
 			}
-
-			let subscriptions = []
-
-			Course.find({}).exec((err, courseList)=>{
-				if(err){
-					return console.log(err)
-				}
-
-				Subscription.find({}).exec((error, subscriptionList)=>{
-					if(error){
-						return console.log(error)
-					}
-
-					res.render('listStudents',{
-						page: 'students',
-						pageTitle: 'Estudiantes Inscritos',
-						courses: courseList,
-						students: subscriptionList,
-						response: response
-					})
-				})
-			})
-
 		})
 	} else {
 		let course = parseInt(req.body.course)
 		
-		response = students.cancel(id, course)
-
-		res.render('listStudents', {
-			page: 'students',
-			pageTitle: 'Estudiantes Inscritos',
-			courses: courses.getCourses(),
-			students: students.getStudents(),
-			response: response
+		Subscription.findOneAndDelete({id: id, course: course}, (err, result)=>{
+			if(err){
+				response = {
+					message: err,
+					success: 'fail'
+				}
+			} else {
+				response = {
+					message: `El estudiante con identificación <strong>${id}</strong> se eliminó del curso correctamente.`,
+					success: 'success'
+				}
+			}
 		})
 	}
+
+	let subscriptions = []
+
+	Course.find({}).exec((err, courseList)=>{
+		if(err){
+			return console.log(err)
+		}
+
+		Subscription.find({}).exec((error, subscriptionList)=>{
+			if(error){
+				return console.log(error)
+			}
+
+			res.render('listStudents',{
+				page: 'students',
+				pageTitle: 'Estudiantes Inscritos',
+				courses: courseList,
+				students: subscriptionList,
+				response: response
+			})
+		})
+	})
 })
 .get('*', (req, res)=>{
 	res.render('index', {

@@ -27,7 +27,7 @@ const getPrivileges = (role) =>{
 				{
 					'name': 'createCourse',
 					'path': '/create',
-					'caption': 'Abrir Curso'
+					'caption': 'Crear Curso'
 				},{
 					name: 'listCourses',
 					path: '/listCourses',
