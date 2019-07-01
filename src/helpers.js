@@ -9,15 +9,13 @@ hbs.registerHelper('isActive', (val1, val2)=>{
 hbs.registerHelper('displayMessage', (status, message)=>{
 	let response
 	if(status == 'success'){
-		response = `<div class="alert alert-success alert-dismissible fade show" role="alert">`
-					+ message + 
-					`<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		response = `<div class="alert alert-success alert-dismissible fade show" role="alert">${message}
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
     					<span aria-hidden="true">&times;</span>
   					</button></div>`
 	} else if(status == 'fail'){
-		response = `<div class="alert alert-danger alert-dismissible fade show" role="alert">` 
-					+ message + 
-					`<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		response = `<div class="alert alert-danger alert-dismissible fade show" role="alert">${message}
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button></div>`
 	} else {
@@ -35,14 +33,14 @@ hbs.registerHelper('listStudents', (id, studentList)=>{
 		arrayFiltered.forEach(student =>{
 			response = response + 
 						`<div class="row mx-0 my-1">
-							<div class="col-11 d-flex align-items-center border-top mb-1 pt-1">` 
-							+ student.name + 
-							`</div>
+							<div class="col-11 d-flex align-items-center border-top mb-1 pt-1"> 
+							 ${student.name}  
+							</div>
 							<div class="col-1 text-right">
 								<form class="d-inline" action="/students" method="post">
 									<input name="method" type="text" value="delete" class="d-none"/>
-									<input name="id" type="number" value=` + student.id + ` class="d-none"/>
-									<input name="course" type="number" value=` + student.course + ` class="d-none"/>
+									<input name="id" type="number" value=${student.id} class="d-none"/>
+									<input name="course" type="number" value=${student.course} class="d-none"/>
 									<button class="btn btn-danger" type="submit">
 										<i class="material-icons">delete</i>
 									</button>

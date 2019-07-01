@@ -32,17 +32,16 @@ const getPrivileges = (role) =>{
 					name: 'listCourses',
 					path: '/listCourses',
 					caption: 'Ver Cursos'
+				},{
+					'name': 'students',
+					'path': '/students',
+					'caption': 'Listar Inscritos por curso'
 				})
 			break
 	}
 
 /*	if(type === 'coordinador'){
 		access.push(
-			{
-				'name': 'students',
-				'path': '/students',
-				'caption': 'Listar Inscritos por curso'
-			},
 			{
 				'name': 'registered',
 				'path': '/allusers',
