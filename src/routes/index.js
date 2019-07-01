@@ -358,12 +358,27 @@ app.get('/home', (req, res)=>{
 	})
 })
 .get('/students', (req, res)=>{
-	res.render('listStudents',{
-		page: 'students',
-		pageTitle: 'Estudiantes Inscritos',
-		courses: courses.getCourses(),
-		students: students.getStudents()
+	let subscriptions = []
+
+	Course.find({}).exec((err, courseList)=>{
+		if(err){
+			return console.log(err)
+		}
+
+		Subscription.find({}).exec((error, subscriptionList)=>{
+			if(error){
+				return console.log(error)
+			}
+
+			res.render('listStudents',{
+				page: 'students',
+				pageTitle: 'Estudiantes Inscritos',
+				courses: courseList,
+				students: subscriptionList
+			})
+		})
 	})
+
 })
 .post('/students', (req, res)=>{
 	let method = req.body.method,
@@ -371,14 +386,41 @@ app.get('/home', (req, res)=>{
 		response
 
 	if(method !== 'delete'){
-		response = courses.close(id)
-	
-		res.render('listStudents', {
-			page: 'students',
-			pageTitle: 'Estudiantes Inscritos',
-			courses: courses.getCourses(),
-			students: students.getStudents(),
-			response: response
+		Course.updateOne({id: id}, {$set:{available: false}}, (err, result)=>{
+			if(err){
+				response = {
+					message: err,
+					success: 'fail'
+				}
+			} else {
+				response = {
+					message: `Se cerró correctamente el curso <strong>${id}</strong>`,
+					success: 'success'
+				}
+			}
+
+			let subscriptions = []
+
+			Course.find({}).exec((err, courseList)=>{
+				if(err){
+					return console.log(err)
+				}
+
+				Subscription.find({}).exec((error, subscriptionList)=>{
+					if(error){
+						return console.log(error)
+					}
+
+					res.render('listStudents',{
+						page: 'students',
+						pageTitle: 'Estudiantes Inscritos',
+						courses: courseList,
+						students: subscriptionList,
+						response: response
+					})
+				})
+			})
+
 		})
 	} else {
 		let course = parseInt(req.body.course)
