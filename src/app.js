@@ -10,7 +10,7 @@ const express = require('express'),
 	//Mongoose connect
 	mongoose = require('mongoose')
 
-	mongoose.connect('mongodb://localhost:27017/neiro', {useNewUrlParser: true}, (err, result)=>{
+	mongoose.connect(process.env.URLDB, {useNewUrlParser: true}, (err, result)=>{
 		if(err){
 			return console.log("Unable to connect MongoDB, please check server")
 		}
