@@ -48,6 +48,12 @@ app.get('/home', (req, res)=>{
 		]
 	})
 })
+.get('/instructions',(req, res)=>{
+	res.render('instructions', {
+		pageTitle: 'Instrucciones',
+		pageName: 'instructions'
+	})
+})
 .get('/', (req, res) =>{
 	// CREATE ROOT USER IF DOESN'T EXIST
 	User.findOne({id: 1, role: 'coordinador'},(err, result)=>{
