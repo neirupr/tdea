@@ -19,7 +19,8 @@ const mongoose = require('mongoose'),
 		email:{
 			type: String,
 			required: true,
-			trim: true
+			trim: true,
+			unique: true
 		},
 		phone:{
 			type: Number,
@@ -34,6 +35,6 @@ const mongoose = require('mongoose'),
 
 	User = mongoose.model('User', userSchema)
 
-userSchema.plugin(uniqueValidator, {message: 'Ya existe un usuario con el id <strong>{VALUE}</strong>'})
+userSchema.plugin(uniqueValidator, {message: 'Ya existe un usuario con el {PATH} <strong>{VALUE}</strong>'})
 
 module.exports = User
