@@ -86,7 +86,7 @@ app.get('/home', (req, res)=>{
 	})
 })
 .post('/login', (req, res)=>{
-	User.findOne({email: req.body.username}, (err, result)=>{
+	User.findOne({email: req.body.username.toLowerCase()}, (err, result)=>{
 		if(err){
 			console.log(err)
 			return res.render('login', {
@@ -140,7 +140,7 @@ app.get('/home', (req, res)=>{
 	let newUser = new User({
 			name: req.body.name,
 			id: parseInt(req.body.id),
-			email: req.body.email,
+			email: req.body.email.toLowerCase(),
 			password: bcrypt.hashSync(req.body.password, 10),
 			phone: parseInt(req.body.phone),
 			role: 'aspirante'
@@ -149,8 +149,9 @@ app.get('/home', (req, res)=>{
 	newUser.save((err, result)=>{
 		let response
 		if(err){
+			let errObject = err.errors.id || err.errors.email
 			response = {
-				message: err.errors.id.message,
+				message: errObject.message,
 				success: 'fail'
 			}
 		} else {
