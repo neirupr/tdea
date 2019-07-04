@@ -275,8 +275,6 @@ app.get('/home', (req, res)=>{
 			course: parseInt(req.body.course)
 		})
 
-	console.log(subscription)
-
 	Subscription.findOne({id: subscription.id, course: subscription.course}, (err, subs)=>{
 		let response
 

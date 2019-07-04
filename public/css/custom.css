@@ -1,3 +1,11 @@
+body{
+	min-height: 100vh;
+	overflow-y: scroll;
+	position: relative;
+}
+.flex-grow-1{
+	flex-grow: 1:;
+}
 .logo{
 	max-width: 100px;
 	margin-right: 50px;
@@ -39,12 +47,13 @@
 .course__list__item{
 	border: 1px solid #6c757d;
 }
-
 .course__list__item:hover{
 	background-color: #f8f9fa;
 	cursor: pointer;
 }	
-
+.course__list__item > div.col-6{
+	padding: 1rem;
+}
 .course__list__item__extra{
 	background-color: #6c757d;
 	border-top: 1px solid #dee2e6;

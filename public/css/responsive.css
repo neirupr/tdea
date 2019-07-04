@@ -1,0 +1,60 @@
+@media (max-width: 991px){
+	.aside{
+		background-color: rgba(0,0,0,.5);
+		height: 100%;
+		position: absolute;
+		z-index: 5;
+	}
+	.aside__container{
+		background-color: #FFF;
+		box-shadow: 0 0 10px rgba(0,0,0,.5);
+		height: 100%;
+		width: 300px;
+	}
+	.aside__option{
+		border-bottom: 1px solid #efefef;
+	}
+	.aside__option a{
+		color: black;
+	}
+	.aside__option.active{
+		font-style: italic;
+	    font-weight: bold;
+	}
+	.aside__user__icon{
+		width: 60px;
+	    border-radius: 50%;
+	    border: 1px solid #dedede;
+	    height: 60px;
+	}
+	.aside__user__icon i{
+		background-color: #b9b9b9;
+		border-radius: 50%;
+		color: #fff;
+		font-size: 32px;
+		height: 50px;
+		width: 50px;
+	}
+	.component__header{
+		align-items: flex-end!important;
+	}
+	.component__header img{
+		margin-right: 0;
+	}
+	.component__header__toggle{
+		width: 100%;
+	}
+	.component__header__toggle i{
+		color: #929292;
+		font-size: 32px; 
+	}
+	.course__list__item{
+		margin-bottom: 8px;
+		padding-top: 12px;
+	}
+	.course__list__item > div.col-6{
+		padding-top: 0;
+		padding-bottom: 0;
+		margin-bottom: 12px;
+	}
+}

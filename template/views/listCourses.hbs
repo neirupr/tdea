@@ -1,6 +1,6 @@
 {{>header}}
 
-<div class="row mx-0 table-bordered courses__list__header">
+<div class="row mx-0 table-bordered courses__list__header d-none d-lg-flex">
 	<div class="col-4 p-3 courses__list__header__cell">Nombre</div>
 	<div class="col-4 p-3 courses__list__header__cell">Descripción</div>
 	<div class="col-2 p-3 courses__list__header__cell">Valor</div>
@@ -8,21 +8,25 @@
 </div>
 {{#each courses}}
 	{{#ifEquals ../role 'coordinador'}}
-		<div class="row mx-0 course__list__item" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
-			<div class="col-4 p-3">{{name}}</div>
-			<div class="col-4 p-3">{{description}}</div>
-			<div class="col-2 p-3">{{price}}</div>
-			<div class="col-2 p-3">
+		<div class="row mx-0 course__list__item flex-lg-row" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
+			<div class="col-6 col-lg-4 d-lg-none"><strong>Nombre</strong></div>
+			<div class="col-6 col-lg-4">{{name}}</div>
+			<div class="col-6 col-lg-4 d-lg-none"><strong>Descripción</strong></div>
+			<div class="col-6 col-lg-4">{{description}}</div>
+			<div class="col-6 col-lg-4 d-lg-none"><strong>Valor</strong></div>
+			<div class="col-6 col-lg-2">{{price}}</div>
+			<div class="col-6 col-lg-4 d-lg-none"><strong>Disponible</strong></div>
+			<div class="col-6 col-lg-2">
 				{{#if available}}Sí{{else}}No{{/if}}
 			</div>
 			<div class="col-12 px-0">
 				{{#if available}}
 					<div id="collapse-{{id}}" class="collapse multi-collapse" aria-labelledby="collapse-{{id}}">
 						<div class="row mx-0">
-							<div class="col-3 py-2 course__list__item__extra">Modalidad:</div>
-							<div class="col-3 py-2 course__list__item__extra__data">{{modality}}</div>
-							<div class="col-3 py-2 course__list__item__extra">Intensidad:</div>
-							<div class="col-3 py-2 course__list__item__extra__data">
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra">Modalidad:</div>
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra__data">{{modality}}</div>
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra">Intensidad:</div>
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra__data">
 								{{#ifEquals intensity 0}}
 									-
 								{{else}}
@@ -36,18 +40,22 @@
 		</div>
 	{{else}}
 		{{#if available}}
-			<div class="row mx-0 course__list__item" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
-				<div class="col-4 p-3">{{name}}</div>
-				<div class="col-4 p-3">{{description}}</div>
-				<div class="col-2 p-3">{{price}}</div>
-				<div class="col-2 p-3">Sí</div>
+			<div class="row mx-0 course__list__item flex-lg-row" data-toggle="collapse" data-target="#collapse-{{id}}" aria-expanded="true" aria-controls="collapse-{{id}}">
+				<div class="col-6 col-lg-4 d-lg-none"><strong>Nombre</strong></div>
+				<div class="col-6 col-lg-4">{{name}}</div>
+				<div class="col-6 col-lg-4 d-lg-none"><strong>Descripción</strong></div>
+				<div class="col-6 col-lg-4">{{description}}</div>
+				<div class="col-6 col-lg-4 d-lg-none"><strong>Valor</strong></div>
+				<div class="col-6 col-lg-2">{{price}}</div>
+				<div class="col-6 col-lg-4 d-lg-none"><strong>Disponible</strong></div>
+				<div class="col-6 col-lg-2">Sí</div>
 				<div class="col-12 px-0">
 					<div id="collapse-{{id}}" class="collapse multi-collapse" aria-labelledby="collapse-{{id}}">
 						<div class="row mx-0">
-							<div class="col-3 py-2 course__list__item__extra">Modalidad:</div>
-							<div class="col-3 py-2 course__list__item__extra__data">{{modality}}</div>
-							<div class="col-3 py-2 course__list__item__extra">Intensidad:</div>
-							<div class="col-3 py-2 course__list__item__extra__data">
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra">Modalidad:</div>
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra__data">{{modality}}</div>
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra">Intensidad:</div>
+							<div class="col-6 col-lg-3 py-2 course__list__item__extra__data">
 								{{#ifEquals intensity 0}}
 									-
 								{{else}}
