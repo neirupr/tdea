@@ -276,13 +276,51 @@ app.get('/home', (req, res)=>{
 		})
 
 	Subscription.findOne({id: subscription.id, course: subscription.course}, (err, subs)=>{
-		let response
+		let response,
+			renderPage = ()=>{
+				User.findById(req.session.user, (err, user)=>{
+					if(err){
+						console.log(err)
+						response = {
+							message: 'Hubo un problema accediendo la base de datos',
+							success: 'fail'
+						}
+					}
+
+					let name='', id='', email='', phone=''
+					if(user){
+						name = user.name
+						id = user.id
+						email = user.email
+						phone = user.phone
+					}
+
+					Course.find({}).exec((error, result)=>{
+						if(error){
+							console.log(error)
+						}
+
+						res.render('subscribe',{
+							page: 'subscribe',
+							pageTitle: 'Inscribirse en un Curso',
+							courses: result,
+							name: name,
+							id: id,
+							email: email,
+							phone: phone,
+							response: response
+						})
+					})
+				})
+			}
 
 		if(err){
 			response = {
 				message: err.errors,
 				success: 'fail'
 			}
+
+			return renderPage()
 		}
 
 		if(subs){
@@ -290,6 +328,8 @@ app.get('/home', (req, res)=>{
 				message: 'Ya estás matriculado en este curso',
 				success: 'fail'
 			}
+
+			renderPage()
 		} else {
 			subscription.save((error, result)=>{
 				if(error){
@@ -304,43 +344,10 @@ app.get('/home', (req, res)=>{
 						success: 'success'
 					}
 				}
+
+				renderPage()
 			})
 		}
-
-		User.findById(req.session.user, (err, user)=>{
-			if(err){
-				console.log(err)
-				response = {
-					message: 'Hubo un problema accediendo la base de datos',
-					success: 'fail'
-				}
-			}
-
-			let name='', id='', email='', phone=''
-			if(user){
-				name = user.name
-				id = user.id
-				email = user.email
-				phone = user.phone
-			}
-
-			Course.find({}).exec((error, result)=>{
-				if(error){
-					console.log(error)
-				}
-
-				res.render('subscribe',{
-					page: 'subscribe',
-					pageTitle: 'Inscribirse en un Curso',
-					courses: result,
-					name: name,
-					id: id,
-					email: email,
-					phone: phone,
-					response: response
-				})
-			})
-		})
 	})
 })
 .get('/students', (req, res)=>{
@@ -369,7 +376,8 @@ app.get('/home', (req, res)=>{
 .post('/students', (req, res)=>{
 	let method = req.body.method,
 		id = parseInt(req.body.id),
-		response
+		response,
+		subscriptions = []
 
 	if(method !== 'delete'){
 		Course.updateOne({id: id}, {$set:{available: false}}, (err, result)=>{
@@ -384,6 +392,26 @@ app.get('/home', (req, res)=>{
 					success: 'success'
 				}
 			}
+
+			Course.find({}).exec((err, courseList)=>{
+				if(err){
+					return console.log(err)
+				}
+
+				Subscription.find({}).exec((error, subscriptionList)=>{
+					if(error){
+						return console.log(error)
+					}
+
+					res.render('listStudents',{
+						page: 'students',
+						pageTitle: 'Estudiantes Inscritos',
+						courses: courseList,
+						students: subscriptionList,
+						response: response
+					})
+				})
+			})
 		})
 	} else {
 		let course = parseInt(req.body.course)
@@ -400,30 +428,28 @@ app.get('/home', (req, res)=>{
 					success: 'success'
 				}
 			}
-		})
-	}
+			
+			Course.find({}).exec((err, courseList)=>{
+				if(err){
+					return console.log(err)
+				}
 
-	let subscriptions = []
+				Subscription.find({}).exec((error, subscriptionList)=>{
+					if(error){
+						return console.log(error)
+					}
 
-	Course.find({}).exec((err, courseList)=>{
-		if(err){
-			return console.log(err)
-		}
-
-		Subscription.find({}).exec((error, subscriptionList)=>{
-			if(error){
-				return console.log(error)
-			}
-
-			res.render('listStudents',{
-				page: 'students',
-				pageTitle: 'Estudiantes Inscritos',
-				courses: courseList,
-				students: subscriptionList,
-				response: response
+					res.render('listStudents',{
+						page: 'students',
+						pageTitle: 'Estudiantes Inscritos',
+						courses: courseList,
+						students: subscriptionList,
+						response: response
+					})
+				})
 			})
 		})
-	})
+	}
 })
 .get('*', (req, res)=>{
 	res.render('index', {
