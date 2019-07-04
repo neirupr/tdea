@@ -8,11 +8,45 @@
 	{{>links}}
 </head>
 <body class="d-flex flex-column">
+	<aside id="js-aside" class="d-lg-none w-100 d-none aside" onclick="toggleAside()">
+		<div class="p-3 js-stopPropagation aside__container">
+			<div class="d-flex mb-4">
+				<div class="d-flex align-items-center justify-content-center aside__user__icon">
+					<i class="far fa-user d-flex justify-content-center align-items-center"></i>
+				</div>
+				<div class="d-flex flex-column justify-content-center align-items-end flex-grow-1">
+					<p class="mb-0">Bienvenido, 
+						<strong>
+							{{#if name}}
+								{{name}}
+							{{else}}
+								Visitante
+							{{/if}}
+						</strong>
+					</p>
+					<a href="/logout">Cerrar sesión</a>
+				</div>
+			</div>
+			<ul class="pl-3 w-100 list-unstyled">
+				{{#each privileges}}
+					<li class="py-2 {{isActive name ../page}} aside__option">
+						<a href="{{path}}">{{caption}}</a>
+					</li>
+				{{/each}}
+				<li class="py-2 {{isActive pageName 'instructions'}} aside__option">
+					<a href="/instructions">Instrucciones</a>
+				</li>
+			</ul>
+		</div>
+	</aside>
 	<header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar component__header">
-		<a href="/home">
-				<img src="/images/keyrus.png" alt="Keyrus Digital" class="logo">
-		</a>
-		<nav class="nav">
+		<div class="d-flex justify-content-between component__header__toggle">
+			<div class="d-lg-none" onclick="toggleAside()">
+				<i class="fas fa-bars"></i>
+			</div>
+			<a href="/home"><img src="/images/keyrus.png" alt="Keyrus Digital" class="logo"></a>
+		</div>
+		<nav class="nav d-none d-lg-flex">
 			<nav class="nav nav-pills nav-fill">
 				{{#each privileges}}
 					<a class="nav-item nav-link {{isActive name ../page}}" href="{{path}}">{{caption}}</a>
@@ -22,7 +56,7 @@
 			</nav>
 		</nav>
 		{{#if name}}
-			<div class="ml-auto">
+			<div class="ml-auto d-none d-lg-block">
 				<span>Bienvenido, <strong>{{name}}</strong></span>
 				<a href="/logout">[Cerrar sesión]</a>
 			</div>
