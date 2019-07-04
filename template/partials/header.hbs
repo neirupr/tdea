@@ -24,7 +24,9 @@
 							{{/if}}
 						</strong>
 					</p>
-					<a href="/logout">Cerrar sesión</a>
+					{{#if name}}
+						<a href="/logout">Cerrar sesión</a>
+					{{/if}}
 				</div>
 			</div>
 			<ul class="pl-3 w-100 list-unstyled">
