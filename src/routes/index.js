@@ -166,7 +166,7 @@ app.get('/home', (req, res)=>{
 
 		const msg = {
 			to: req.body.email.toLowerCase(),
-			from: 'neiro.torres@keyrus.com',
+			from: 'neiro.torres@mailinator.com',
 			subject: 'Bienvenid@ ' + newUser.name + ' a mi sistema gestor de cursos' ,
 			html: `
 				<div style="border: 1px solid black; width: 100%;">
