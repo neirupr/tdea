@@ -93,6 +93,7 @@ app.get('/home', (req, res)=>{
 		if(err){
 			console.log(err)
 			return res.render('login', {
+				pageTitle: 'Iniciar Sesión',
 				response: {
 					message: 'Error conectando con la base de datos',
 					success: 'fail'
@@ -110,6 +111,7 @@ app.get('/home', (req, res)=>{
 				res.redirect('home')
 			} else {
 				res.render('login', {
+					pageTitle: 'Iniciar Sesión',
 					response: {
 						message: 'Las credenciales son incorrectas',
 						success: 'fail'
@@ -118,6 +120,7 @@ app.get('/home', (req, res)=>{
 			}
 		} else {
 			res.render('login', {
+				pageTitle: 'Iniciar Sesión',
 				response: {
 					message: 'Las credenciales son incorrectas',
 					success: 'fail'
@@ -127,10 +130,116 @@ app.get('/home', (req, res)=>{
 	})
 })
 .get('/register', (req, res)=>{
-		res.render('register', {
-			page: 'register',
-			pageTitle: 'Registrar nuevo usuario',
-		})		
+	res.render('register', {
+		page: 'register',
+		pageTitle: 'Registrar nuevo usuario',
+	})		
+})
+.get('/forgot', (req, res)=>{
+	res.render('forgot', {
+		page: 'forgot',
+		pageTitle: 'Restaurar contraseña',
+	})		
+})
+.post('/forgot', (req, res)=>{
+
+	User.findOne({email: req.body.email.toLowerCase()}, (err, result)=>{
+		console.log(err)
+		console.log(result)
+		if(err){
+			console.log(err)
+			return res.render('forgot', {
+				response: {
+					message: `El usuario <strong>${req.body.email}</strong> no existe`,
+					success: 'fail'
+				}
+			})
+		}
+
+		if(result){
+			let siteURL = req.protocol + '://' + req.get('host') + '/restore?id=' + result._id + '&token=' + result.password
+
+			const msg = {
+				to: req.body.email.toLowerCase(),
+				from: 'neiro.torres@mailinator.com',
+				subject: 'Restablecer tu contraseña',
+				html: `
+					<div style="border: 1px solid black; width: 100%;">
+						<div style="background-color:black;color:white;text-align: center;padding: 5px 0;font-size: 28px;">
+							Recupera tu acceso a mi Gestor de Cursos!
+						</div>
+						<div style="padding: 10px;">
+							<p>Hola <strong>${result.name}</strong>, parece que estás teniendo problemas con tu acceso al sistema. Por favor sigue este enlace para cambiar tu contraseña:</p>
+							<div>
+								<p style="margin: 0px"><strong>Sitio web: </strong><a href="${siteURL}" target="_blank">${siteURL}</a></p>
+								<p style="margin: 0px">Sólo debes llenar el formulario y listo!</p>
+							</div>
+						</div>
+					</div>
+
+					<br>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Front-end y sabes JavaScript, HTML, CSS y JQuery ó</p>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Back-end y sabes Java y Spring</p>
+					<p style="margin: 0px">No dudes en enviarme tu hoja de vida a <strong>neiro.torres@keyrus.com</strong> y <strong>neiroandres@yahoo.com.co</strong> (aplican para Medellín y Bogotá)</p>
+				`
+			};
+
+			sgMail.send(msg)
+			res.render('login', {
+				pageTitle: 'Iniciar Sesión',
+				response: {
+					message: `Se ha enviado un correo para restablecer tu contraseña al email <strong>${req.body.email}</strong>`,
+					success: 'success'
+				}
+			})
+		} else {
+			res.render('forgot', {
+				response: {
+					message: `El usuario <strong>${req.body.email}</strong> no existe`,
+					success: 'fail'
+				}
+			})
+		}
+	})
+
+})
+.get('/restore', (req, res)=>{
+	res.render('restore', {
+		page: 'restore',
+		pageTitle: 'Recuperar contraseña',
+		id: req.query.id,
+		token: req.query.token
+	})		
+})
+.post('/restore', (req, res)=>{
+	User.findOneAndUpdate({_id: req.body.id, password: req.body.token}, {$set: {password: bcrypt.hashSync(req.body.password, 10)}}, (err, result)=>{
+		let response
+
+		if(err){
+			response={
+				message: "Token no válido",
+				success: 'fail'
+			}
+		} else {
+			if(result){
+				response={
+					message: "Se ha actualizado correctamente tu contraseña",
+					success: "success"
+				}
+				console.log(result)
+			} else {
+				response={
+					message: "Token no válido",
+					success: 'fail'
+				}
+			}
+		}
+
+		res.render('login',{
+			pageTitle: 'Iniciar sesión',
+			response: response
+		})
+	})
 })
 .get('/logout', (req, res)=>{
 	req.session.user = undefined
