@@ -162,40 +162,44 @@ app.get('/home', (req, res)=>{
 				message: 'El usuario <strong>' + result.name + '</strong> se ha registrado correctamente! Por favor <a href="/">inicia sesión</a>',
 				success: 'success'
 			} 
-		}
+			
+			let siteUrl = req.protocol + '://' + req.get('host')
 
-		const msg = {
-			to: req.body.email.toLowerCase(),
-			from: 'neiro.torres@mailinator.com',
-			subject: 'Bienvenid@ ' + newUser.name + ' a mi sistema gestor de cursos' ,
-			html: `
-				<div style="border: 1px solid black; width: 100%;">
-					<div style="background-color:black;color:white;text-align: center;padding: 5px 0;font-size: 28px;">
-						Bienvenid@ a mi Gestor de Cursos!
-					</div>
-					<div style="padding: 10px;">
-						<p>Muchas gracias <strong>${newUser.name}</strong> por suscribirte a mis cursos. Te doy la bienvenida y espero que sea de tu agrado probar mi entrega.</p>
-						<p>Tus datos de inicio de sesión son:</p>
-						<div>
-							<p style="margin: 0px"><strong>Usuario: </strong> ${newUser.email}</p>
-							<p style="margin: 0px"><strong>Contraseña: </strong> ${req.body.password}</p>
+			const msg = {
+				to: req.body.email.toLowerCase(),
+				from: 'neiro.torres@mailinator.com',
+				subject: 'Bienvenid@ ' + newUser.name + ' a mi sistema gestor de cursos' ,
+				html: `
+					<div style="border: 1px solid black; width: 100%;">
+						<div style="background-color:black;color:white;text-align: center;padding: 5px 0;font-size: 28px;">
+							Bienvenid@ a mi Gestor de Cursos!
+						</div>
+						<div style="padding: 10px;">
+							<p>Muchas gracias <strong>${newUser.name}</strong> por suscribirte a mis cursos. Te doy la bienvenida y espero que sea de tu agrado probar mi entrega.</p>
+							<p>Tus datos de inicio de sesión son:</p>
+							<div>
+								<p style="margin: 0px"><strong>Sitio web: </strong><a href="${siteUrl}" target="_blank">${siteUrl}</a></p>
+								<p style="margin: 0px"><strong>Usuario: </strong> ${newUser.email}</p>
+								<p style="margin: 0px"><strong>Contraseña: </strong> ${req.body.password}</p>
+							</div>
 						</div>
 					</div>
-				</div>
 
-				<br>
-				<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Front-end y sabes JavaScript, HTML, CSS y JQuery ó</p>
-				<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Back-end y sabes Java y Spring</p>
-				<p style="margin: 0px">No dudes en enviarme tu hoja de vida a <strong>neiro.torres@keyrus.com</strong> y <strong>neiroandres@yahoo.com.co</strong> (aplican para Medellín y Bogotá)</p>
-			`
-		};
+					<br>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Front-end y sabes JavaScript, HTML, CSS y JQuery ó</p>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Back-end y sabes Java y Spring</p>
+					<p style="margin: 0px">No dudes en enviarme tu hoja de vida a <strong>neiro.torres@keyrus.com</strong> y <strong>neiroandres@yahoo.com.co</strong> (aplican para Medellín y Bogotá)</p>
+				`
+			};
 
-		sgMail.send(msg)
-		res.render('register', {
-			page: 'register',
-			pageTitle: 'Registrar nuevo usuario',
-			response: response
-		})
+			sgMail.send(msg)
+			res.render('register', {
+				page: 'register',
+				pageTitle: 'Registrar nuevo usuario',
+				response: response
+			})
+		}
+
 	})	
 })
 .get('/listCourses', (req, res)=>{
