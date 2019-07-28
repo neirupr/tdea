@@ -1,0 +1,32 @@
+{{>header}}
+{{>messages}}
+
+<div class="col-12 d-none justify-content-center js-validatePasswords-error px-0">
+	<div class="w-100 alert alert-danger alert-dismissible fade show" role="alert">Las contraseñas no coinciden!
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">×</span>
+		</button>
+	</div>
+</div>
+<form class="row" method="post" action="/restore" id="restorePasswordForm">
+	<input type="text" name="id" value={{id}} hidden>
+	<input type="text" name="token" value={{token}} hidden>
+	<div class="form-group col-12 col-md-6">
+		<label for="password">Ingresa tu nueva contraseña*</label>
+		<input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="confirmPassword">Confirma tu nueva contraseña*</label>
+		<input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Contraseña" required>
+	</div>
+	<div class="col-12 d-flex justify-content-center">
+		<small class="form-text text-muted">Los campos con * son obligatorios</small>
+	</div>
+	<div class="col-12 text-center">
+		<button type="submit" class="btn btn-primary col-4 col-lg-2">Registrar</button>
+		<a  class="btn btn-secondary col-4 col-lg-2" href="/">Volver</a>
+	</div>
+</form>
+
+
+{{>footer}}

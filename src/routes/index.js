@@ -8,8 +8,21 @@ const express = require('express'),
 	User = require('../models/user'),
 	Subscription = require('../models/subscription')
 	bcrypt = require('bcrypt'),
-	privileges = require('../privileges')
+	privileges = require('../privileges'),
 	session = require('express-session'),
+	sgMail = require('@sendgrid/mail'),
+	multer  = require('multer'),
+	upload = multer({
+		fileFilter(req, file, cb){
+			if(!file.originalname.toLowerCase().match(/\.(jpg|png|jpeg)$/)){
+				return cb(new Error("No es un archivo válido"))
+			}
+
+			cb(null, true)
+		}
+	})
+
+	sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
 require('../helpers')
 
@@ -32,6 +45,7 @@ app.use((req, res, next)=>{
 		res.locals.name = req.session.name
 		res.locals.privileges = req.session.privileges
 		res.locals.role = req.session.role
+		res.locals.avatar = req.session.avatar
 	} else {
 		res.locals.role = 'interesado'
 		res.locals.privileges = privileges.getPrivileges('interesado')
@@ -67,7 +81,8 @@ app.get('/home', (req, res)=>{
 					email: 'admin@mailinator.com',
 					password: bcrypt.hashSync('nimda', 10),
 					phone: 1234567,
-					role: 'coordinador'
+					role: 'coordinador',
+					avatar: ''
 				})
 
 				newUser.save((err, result)=>{
@@ -90,6 +105,7 @@ app.get('/home', (req, res)=>{
 		if(err){
 			console.log(err)
 			return res.render('login', {
+				pageTitle: 'Iniciar Sesión',
 				response: {
 					message: 'Error conectando con la base de datos',
 					success: 'fail'
@@ -103,10 +119,12 @@ app.get('/home', (req, res)=>{
 				req.session.name = result.name
 				req.session.privileges = privileges.getPrivileges(result.role)
 				req.session.role = result.role
+				req.session.avatar = result.avatar.toString("base64")
 
 				res.redirect('home')
 			} else {
 				res.render('login', {
+					pageTitle: 'Iniciar Sesión',
 					response: {
 						message: 'Las credenciales son incorrectas',
 						success: 'fail'
@@ -115,6 +133,7 @@ app.get('/home', (req, res)=>{
 			}
 		} else {
 			res.render('login', {
+				pageTitle: 'Iniciar Sesión',
 				response: {
 					message: 'Las credenciales son incorrectas',
 					success: 'fail'
@@ -123,11 +142,209 @@ app.get('/home', (req, res)=>{
 		}
 	})
 })
+.get('/myAccount', (req, res)=>{
+	res.render('editProfile', {
+		page: 'myAccount',
+		pageTitle: 'Actualizar mi Perfil'
+	})
+})
+.post('/myAccount', upload.single('image'), (req, res)=>{
+	let newData = {},
+		anyData = false
+	
+	if(req.body.name !== ''){
+		newData.name = req.body.name
+		anyData = true
+	}
+
+	if(req.body.password !== ''){
+		newData.password = req.body.password
+		anyData = true
+	}
+
+	if(req.body.phone !== ''){
+		newData.phone = req.body.phone
+		anyData = true
+	}
+
+	if(undefined !== req.file){
+		newData.avatar = req.file.buffer
+		anyData = true
+	}
+
+	if(anyData){
+		User.findOne({_id: req.session.user}, (err, resu)=>{
+			let response
+			if(err){
+				res.render('editProfile', {
+					page: 'myAccount',
+					pageTitle: 'Actualizar mi Perfil',
+					response: {
+						message: 'Ocurrió un problema al buscar el usuario',
+						success: 'fail'
+					}
+				})
+			} else {
+				if(bcrypt.compareSync(req.body.oldPassword, resu.password)){
+					User.findOneAndUpdate({_id: req.session.user}, {$set: newData}, (error, result)=>{
+						if(error)
+							response={
+								message: 'Ocurrió un error durante la actualización de tu perfil',
+								success: 'fail'
+							}
+						if(result){
+							response={
+								message: 'Se actualizó correctamente tu perfil',
+								success: 'success'
+							}
+
+							req.session.avatar = req.file.buffer.toString("base64")
+
+							if(newData.avatar){
+								response.message = response.message + '. <strong>Tu imagen de perfil se actualizará cuando vuelvas a iniciar sesión</strong>'
+							}
+						}
+
+						res.render('editProfile', {
+							page: 'myAccount',
+							pageTitle: 'Actualizar mi Perfil',
+							response: response
+						})
+					})
+				} else {
+					res.render('editProfile', {
+						page: 'myAccount',
+						pageTitle: 'Actualizar mi Perfil',
+						response: {
+							message: 'Contraseña incorrecta',
+							success: 'fail'
+						}
+					})
+				}
+			}
+
+		})
+	} else {
+		res.render('editProfile', {
+			page: 'myAccount',
+			pageTitle: 'Actualizar mi Perfil',
+			response: {
+				message: 'Realiza al menos un cambio',
+				success: 'fail'
+			}
+		})
+	}
+
+})
 .get('/register', (req, res)=>{
-		res.render('register', {
-			page: 'register',
-			pageTitle: 'Registrar nuevo usuario',
-		})		
+	res.render('register', {
+		page: 'register',
+		pageTitle: 'Registrar nuevo usuario',
+	})		
+})
+.get('/forgot', (req, res)=>{
+	res.render('forgot', {
+		page: 'forgot',
+		pageTitle: 'Restaurar contraseña',
+	})		
+})
+.post('/forgot', (req, res)=>{
+
+	User.findOne({email: req.body.email.toLowerCase()}, (err, result)=>{
+		console.log(err)
+		if(err){
+			console.log(err)
+			return res.render('forgot', {
+				response: {
+					message: `El usuario <strong>${req.body.email}</strong> no existe`,
+					success: 'fail'
+				}
+			})
+		}
+
+		if(result){
+			let siteURL = req.protocol + '://' + req.get('host') + '/restore?id=' + result._id + '&token=' + result.password
+
+			const msg = {
+				to: req.body.email.toLowerCase(),
+				from: 'neiro.torres@mailinator.com',
+				subject: 'Restablecer tu contraseña',
+				html: `
+					<div style="border: 1px solid black; width: 100%;">
+						<div style="background-color:black;color:white;text-align: center;padding: 5px 0;font-size: 28px;">
+							Recupera tu acceso a mi Gestor de Cursos!
+						</div>
+						<div style="padding: 10px;">
+							<p>Hola <strong>${result.name}</strong>, parece que estás teniendo problemas con tu acceso al sistema. Por favor sigue este enlace para cambiar tu contraseña:</p>
+							<div>
+								<p style="margin: 0px"><strong>Sitio web: </strong><a href="${siteURL}" target="_blank">${siteURL}</a></p>
+								<p style="margin: 0px">Sólo debes llenar el formulario y listo!</p>
+							</div>
+						</div>
+					</div>
+
+					<br>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Front-end y sabes JavaScript, HTML, CSS y JQuery ó</p>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Back-end y sabes Java y Spring</p>
+					<p style="margin: 0px">No dudes en enviarme tu hoja de vida a <strong>neiro.torres@keyrus.com</strong> y <strong>neiroandres@yahoo.com.co</strong> (aplican para Medellín y Bogotá)</p>
+				`
+			};
+
+			sgMail.send(msg)
+			res.render('login', {
+				pageTitle: 'Iniciar Sesión',
+				response: {
+					message: `Se ha enviado un correo para restablecer tu contraseña al email <strong>${req.body.email}</strong>`,
+					success: 'success'
+				}
+			})
+		} else {
+			res.render('forgot', {
+				response: {
+					message: `El usuario <strong>${req.body.email}</strong> no existe`,
+					success: 'fail'
+				}
+			})
+		}
+	})
+
+})
+.get('/restore', (req, res)=>{
+	res.render('restore', {
+		page: 'restore',
+		pageTitle: 'Recuperar contraseña',
+		id: req.query.id,
+		token: req.query.token
+	})		
+})
+.post('/restore', (req, res)=>{
+	User.findOneAndUpdate({_id: req.body.id, password: req.body.token}, {$set: {password: bcrypt.hashSync(req.body.password, 10)}}, (err, result)=>{
+		let response
+
+		if(err){
+			response={
+				message: "Token no válido",
+				success: 'fail'
+			}
+		} else {
+			if(result){
+				response={
+					message: "Se ha actualizado correctamente tu contraseña",
+					success: "success"
+				}
+			} else {
+				response={
+					message: "Token no válido",
+					success: 'fail'
+				}
+			}
+		}
+
+		res.render('login',{
+			pageTitle: 'Iniciar sesión',
+			response: response
+		})
+	})
 })
 .get('/logout', (req, res)=>{
 	req.session.user = undefined
@@ -143,7 +360,8 @@ app.get('/home', (req, res)=>{
 			email: req.body.email.toLowerCase(),
 			password: bcrypt.hashSync(req.body.password, 10),
 			phone: parseInt(req.body.phone),
-			role: 'aspirante'
+			role: 'aspirante',
+			avatar: ''
 		})
 
 	newUser.save((err, result)=>{
@@ -159,14 +377,44 @@ app.get('/home', (req, res)=>{
 				message: 'El usuario <strong>' + result.name + '</strong> se ha registrado correctamente! Por favor <a href="/">inicia sesión</a>',
 				success: 'success'
 			} 
+			
+			let siteUrl = req.protocol + '://' + req.get('host')
+
+			const msg = {
+				to: req.body.email.toLowerCase(),
+				from: 'neiro.torres@mailinator.com',
+				subject: 'Bienvenid@ ' + newUser.name + ' a mi sistema gestor de cursos' ,
+				html: `
+					<div style="border: 1px solid black; width: 100%;">
+						<div style="background-color:black;color:white;text-align: center;padding: 5px 0;font-size: 28px;">
+							Bienvenid@ a mi Gestor de Cursos!
+						</div>
+						<div style="padding: 10px;">
+							<p>Muchas gracias <strong>${newUser.name}</strong> por suscribirte a mis cursos. Te doy la bienvenida y espero que sea de tu agrado probar mi entrega.</p>
+							<p>Tus datos de inicio de sesión son:</p>
+							<div>
+								<p style="margin: 0px"><strong>Sitio web: </strong><a href="${siteUrl}" target="_blank">${siteUrl}</a></p>
+								<p style="margin: 0px"><strong>Usuario: </strong> ${newUser.email}</p>
+								<p style="margin: 0px"><strong>Contraseña: </strong> ${req.body.password}</p>
+							</div>
+						</div>
+					</div>
+
+					<br>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Front-end y sabes JavaScript, HTML, CSS y JQuery ó</p>
+					<p style="margin: 0px">Si estás en busca de una oportunidad laboral como Back-end y sabes Java y Spring</p>
+					<p style="margin: 0px">No dudes en enviarme tu hoja de vida a <strong>neiro.torres@keyrus.com</strong> y <strong>neiroandres@yahoo.com.co</strong> (aplican para Medellín y Bogotá)</p>
+				`
+			};
+
+			sgMail.send(msg)
+			res.render('register', {
+				page: 'register',
+				pageTitle: 'Registrar nuevo usuario',
+				response: response
+			})
 		}
 
-
-		res.render('register', {
-			page: 'register',
-			pageTitle: 'Registrar nuevo usuario',
-			response: response
-		})
 	})	
 })
 .get('/listCourses', (req, res)=>{

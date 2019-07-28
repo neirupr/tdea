@@ -1,0 +1,19 @@
+{{>header}}
+{{>messages}}
+
+<form class="row" method="post" action="/forgot">
+	<div class="form-group col-12 col-md-6 offset-md-3">
+		<label for="email">Ingresa tu correo*</label>
+		<input type="email" class="form-control" id="email" name="email" placeholder="Correo electrónico" required>
+	</div>
+	<div class="col-12 d-flex justify-content-center">
+		<small class="form-text text-muted">Los campos con * son obligatorios</small>
+	</div>
+	<div class="col-12 text-center">
+		<button type="submit" class="btn btn-primary col-5 col-lg-2">Enviar email</button>
+		<a  class="btn btn-secondary col-5 col-lg-2" href="/">Volver</a>
+	</div>
+</form>
+
+
+{{>footer}}
