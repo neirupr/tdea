@@ -30,6 +30,9 @@ const mongoose = require('mongoose'),
 			type: String,
 			required: true,
 			enum: {values: ['coordinador', 'aspirante', 'interesado']}
+		},
+		avatar:{
+			type: Buffer
 		}
 	}),
 

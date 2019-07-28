@@ -10,9 +10,13 @@ const getPrivileges = (role) =>{
 				path: '/listCourses',
 				caption: 'Ver Cursos'
 			},{
-				'name': 'subscribe',
-				'path': '/subscribe',
-				'caption': 'Inscribirse'
+				name: 'subscribe',
+				path: '/subscribe',
+				caption: 'Inscribirse'
+			},{
+				name: 'myAccount',
+				path: '/myAccount',
+				caption: 'Mi cuenta'
 			})
 			break
 		case 'interesado':
@@ -25,41 +29,24 @@ const getPrivileges = (role) =>{
 		case 'coordinador':
 			access.push(
 				{
-					'name': 'createCourse',
-					'path': '/create',
-					'caption': 'Crear Curso'
+					name: 'createCourse',
+					path: '/create',
+					caption: 'Crear Curso'
 				},{
 					name: 'listCourses',
 					path: '/listCourses',
 					caption: 'Ver Cursos'
 				},{
-					'name': 'students',
-					'path': '/students',
-					'caption': 'Listar Inscritos por curso'
+					name: 'students',
+					path: '/students',
+					caption: 'Listar Inscritos por curso'
+				},{
+					name: 'myAccount',
+					path: '/myAccount',
+					caption: 'Mi cuenta'
 				})
 			break
 	}
-
-/*	if(type === 'coordinador'){
-		access.push(
-			{
-				'name': 'registered',
-				'path': '/allusers',
-				'caption': 'Administrar usuarios'
-			}
-			)
-	} else {
-		access.push({
-				'name': 'subscribe',
-				'path': '/subscribe',
-				'caption': 'Inscribirse'
-			},
-			{
-				'name': 'cursos',
-				'path': '/courseList',
-				'caption': 'Mis Cursos'
-			})
-	}*/
 
 	return access
 }

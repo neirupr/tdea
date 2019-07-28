@@ -65,3 +65,17 @@ body{
 	border-top: 1px solid #dee2e6;
 	text-align: center;
 }
+.user__icon{
+	width: 60px;
+	border-radius: 50%;
+	border: 1px solid #dedede;
+	height: 60px;
+}
+.user__icon i, .user__icon img{
+	background-color: #b9b9b9;
+	border-radius: 50%;
+	color: #fff;
+	font-size: 32px;
+	height: 50px;
+	width: 50px;
+}
