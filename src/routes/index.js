@@ -198,6 +198,8 @@ app.get('/home', (req, res)=>{
 								success: 'success'
 							}
 
+							req.session.avatar = req.file.buffer.toString("base64")
+
 							if(newData.avatar){
 								response.message = response.message + '. <strong>Tu imagen de perfil se actualizará cuando vuelvas a iniciar sesión</strong>'
 							}
