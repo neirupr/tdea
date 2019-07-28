@@ -6,6 +6,8 @@ const express = require('express'),
 	path = require('path'),
 	publicDir = path.join(__dirname,'../public'),
 	bodyParser = require('body-parser'),
+	server = require('http').createServer(app),
+	io = require('socket.io')(server),
 
 	//Mongoose connect
 	mongoose = require('mongoose')
@@ -24,6 +26,12 @@ app.use(bodyParser.urlencoded({extended:false}))
 //Routes
 .use(require('./routes/index'))
 
-app.listen(process.env.PORT, ()=>{
+io.on('connection', client=>{
+	client.on('message', data=>{
+		client.broadcast.emit('message', data)
+	})
+})
+
+server.listen(process.env.PORT, ()=>{
 	console.log('Escuchando en el puerto ' + process.env.PORT)
 })

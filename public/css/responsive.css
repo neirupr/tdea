@@ -21,6 +21,16 @@
 		font-style: italic;
 	    font-weight: bold;
 	}
+	.chat__bubble{
+		left: 120px;
+		top: 50%;
+	}
+	.chat__container{
+		position: sticky;
+		bottom: 0;
+		right: auto;
+		width: 100%;
+	}
 	.component__header{
 		align-items: flex-end!important;
 	}

@@ -1,0 +1,19 @@
+{{#if name}}
+	<div class="chat__container">
+		<div class="chat__title w-100 d-flex justify-content-between align-items-center" onclick="toggleChat()">Sala de Chat
+			<i class="fas fa-chevron-up js-toggleChat"></i>
+			<i class="fas fa-chevron-down js-toggleChat d-none"></i>
+			<div class="chat__bubble d-none align-items-center justify-content-center">
+				<span class="js-newMessagesCounter">0</span>
+			</div>
+		</div>
+		<div class="chat__content js-chatContent d-none">
+			<div class="chat js-chat">
+			</div>
+			<form class="chat__input d-flex">
+				<input type="text" placeholder="Ingresa tu mensaje" name="message" class="form-control chat__text js-chatText">
+				<button class="btn btn-primary">Enviar</button>
+			</form>
+		</div>
+	</div>
+{{/if}}
