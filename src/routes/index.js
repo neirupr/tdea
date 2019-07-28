@@ -10,7 +10,17 @@ const express = require('express'),
 	bcrypt = require('bcrypt'),
 	privileges = require('../privileges'),
 	session = require('express-session'),
-	sgMail = require('@sendgrid/mail')
+	sgMail = require('@sendgrid/mail'),
+	multer  = require('multer'),
+	upload = multer({
+		fileFilter(req, file, cb){
+			if(!file.originalname.toLowerCase().match(/\.(jpg|png|jpeg)$/)){
+				return cb(new Error("No es un archivo válido"))
+			}
+
+			cb(null, true)
+		}
+	})
 
 	sgMail.setApiKey(process.env.SENDGRID_API_KEY)
 
@@ -35,6 +45,7 @@ app.use((req, res, next)=>{
 		res.locals.name = req.session.name
 		res.locals.privileges = req.session.privileges
 		res.locals.role = req.session.role
+		res.locals.avatar = req.session.avatar
 	} else {
 		res.locals.role = 'interesado'
 		res.locals.privileges = privileges.getPrivileges('interesado')
@@ -70,7 +81,8 @@ app.get('/home', (req, res)=>{
 					email: 'admin@mailinator.com',
 					password: bcrypt.hashSync('nimda', 10),
 					phone: 1234567,
-					role: 'coordinador'
+					role: 'coordinador',
+					avatar: ''
 				})
 
 				newUser.save((err, result)=>{
@@ -107,6 +119,7 @@ app.get('/home', (req, res)=>{
 				req.session.name = result.name
 				req.session.privileges = privileges.getPrivileges(result.role)
 				req.session.role = result.role
+				req.session.avatar = result.avatar.toString("base64")
 
 				res.redirect('home')
 			} else {
@@ -129,6 +142,98 @@ app.get('/home', (req, res)=>{
 		}
 	})
 })
+.get('/myAccount', (req, res)=>{
+	res.render('editProfile', {
+		page: 'myAccount',
+		pageTitle: 'Actualizar mi Perfil'
+	})
+})
+.post('/myAccount', upload.single('image'), (req, res)=>{
+	let newData = {},
+		anyData = false
+	
+	if(req.body.name !== ''){
+		newData.name = req.body.name
+		anyData = true
+	}
+
+	if(req.body.password !== ''){
+		newData.password = req.body.password
+		anyData = true
+	}
+
+	if(req.body.phone !== ''){
+		newData.phone = req.body.phone
+		anyData = true
+	}
+
+	if(undefined !== req.file){
+		newData.avatar = req.file.buffer
+		anyData = true
+	}
+
+	if(anyData){
+		User.findOne({_id: req.session.user}, (err, resu)=>{
+			let response
+			if(err){
+				res.render('editProfile', {
+					page: 'myAccount',
+					pageTitle: 'Actualizar mi Perfil',
+					response: {
+						message: 'Ocurrió un problema al buscar el usuario',
+						success: 'fail'
+					}
+				})
+			} else {
+				if(bcrypt.compareSync(req.body.oldPassword, resu.password)){
+					User.findOneAndUpdate({_id: req.session.user}, {$set: newData}, (error, result)=>{
+						if(error)
+							response={
+								message: 'Ocurrió un error durante la actualización de tu perfil',
+								success: 'fail'
+							}
+						if(result){
+							response={
+								message: 'Se actualizó correctamente tu perfil',
+								success: 'success'
+							}
+
+							if(newData.avatar){
+								response.message = response.message + '. <strong>Tu imagen de perfil se actualizará cuando vuelvas a iniciar sesión</strong>'
+							}
+						}
+
+						res.render('editProfile', {
+							page: 'myAccount',
+							pageTitle: 'Actualizar mi Perfil',
+							response: response
+						})
+					})
+				} else {
+					res.render('editProfile', {
+						page: 'myAccount',
+						pageTitle: 'Actualizar mi Perfil',
+						response: {
+							message: 'Contraseña incorrecta',
+							success: 'fail'
+						}
+					})
+				}
+			}
+
+		})
+	} else {
+		res.render('editProfile', {
+			page: 'myAccount',
+			pageTitle: 'Actualizar mi Perfil',
+			response: {
+				message: 'Realiza al menos un cambio',
+				success: 'fail'
+			}
+		})
+	}
+
+})
 .get('/register', (req, res)=>{
 	res.render('register', {
 		page: 'register',
@@ -145,7 +250,6 @@ app.get('/home', (req, res)=>{
 
 	User.findOne({email: req.body.email.toLowerCase()}, (err, result)=>{
 		console.log(err)
-		console.log(result)
 		if(err){
 			console.log(err)
 			return res.render('forgot', {
@@ -226,7 +330,6 @@ app.get('/home', (req, res)=>{
 					message: "Se ha actualizado correctamente tu contraseña",
 					success: "success"
 				}
-				console.log(result)
 			} else {
 				response={
 					message: "Token no válido",
@@ -255,7 +358,8 @@ app.get('/home', (req, res)=>{
 			email: req.body.email.toLowerCase(),
 			password: bcrypt.hashSync(req.body.password, 10),
 			phone: parseInt(req.body.phone),
-			role: 'aspirante'
+			role: 'aspirante',
+			avatar: ''
 		})
 
 	newUser.save((err, result)=>{

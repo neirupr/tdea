@@ -1,0 +1,39 @@
+{{>header}}
+{{>messages}}
+
+<form class="row" method="post" action="/myAccount" enctype="multipart/form-data">
+	<div class="form-group col-12 col-md-6">
+		<label for="name">Nuevo nombre</label>
+		<input type="text" class="form-control" id="name" name="name" placeholder="Nombre">
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="password">Nueva contraseña</label>
+		<input type="password" class="form-control" id="password" name="password" placeholder="Contraseña">
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="phone">Nuevo teléfono</label>
+		<input type="number" class="form-control" id="phone" name="phone" placeholder="Teléfono">
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="image">Foto de perfil</label>
+
+		<div class="custom-file">
+			<input type="file" class="custom-file-input" id="image" name="image" accept="image/*">
+			<label class="custom-file-label" for="image">Foto de perfil</label>
+		</div>
+	</div>
+	<div class="form-group col-12 col-md-6">
+		<label for="oldPassword">Ingresa tu contraseña actual*</label>
+		<input type="password" class="form-control" id="oldPassword" name="oldPassword" placeholder="Contraseña" required>
+	</div>
+	<div class="col-12 d-flex justify-content-center">
+		<small class="form-text text-muted">Los campos con * son obligatorios</small>
+	</div>
+	<div class="col-12 text-center">
+		<button type="submit" class="btn btn-primary col-4 col-lg-2">Editar</button>
+		<a  class="btn btn-secondary col-4 col-lg-2" href="/home">Volver</a>
+	</div>
+</form>
+
+
+{{>footer}}

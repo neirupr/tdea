@@ -11,8 +11,12 @@
 	<aside id="js-aside" class="d-lg-none w-100 d-none aside" onclick="toggleAside()">
 		<div class="p-3 js-stopPropagation aside__container">
 			<div class="d-flex mb-4">
-				<div class="d-flex align-items-center justify-content-center aside__user__icon">
-					<i class="far fa-user d-flex justify-content-center align-items-center"></i>
+				<div class="d-flex align-items-center justify-content-center user__icon">
+					{{#if avatar}}
+						<img src="data:img/png;base64,{{avatar}}" alt="">
+					{{else}}
+						<i class="far fa-user d-flex justify-content-center align-items-center"></i>
+					{{/if}}
 				</div>
 				<div class="d-flex flex-column justify-content-center align-items-end flex-grow-1">
 					<p class="mb-0">Bienvenido, 
@@ -58,9 +62,22 @@
 			</nav>
 		</nav>
 		{{#if name}}
-			<div class="ml-auto d-none d-lg-block">
+			<div class="ml-auto d-none d-lg-flex align-items-center">
+				<div style="margin-right: 5px;" class="d-flex align-items-center justify-content-center">
+					<div class="d-flex align-items-center justify-content-center user__icon">
+						{{#if avatar}}
+							<img src="data:img/png;base64,{{avatar}}" alt="">
+						{{else}}
+							<i class="far fa-user d-flex justify-content-center align-items-center"></i>
+						{{/if}}
+					</div>
+				</div>
 				<span>Bienvenido, <strong>{{name}}</strong></span>
 				<a href="/logout">[Cerrar sesión]</a>
+			</div>
+		{{else}}
+			<div class="d-md-flex align-items-center justify-content-center user__icon d-none ml-auto">
+				<i class="far fa-user d-flex justify-content-center align-items-center"></i>
 			</div>
 		{{/if}}
 	</header>
