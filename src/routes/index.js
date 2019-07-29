@@ -373,16 +373,13 @@ app.get('/home', (req, res)=>{
 				success: 'fail'
 			}
 		} else {
-			console.log("1")
 			response = {
 				message: 'El usuario <strong>' + result.name + '</strong> se ha registrado correctamente! Por favor <a href="/">inicia sesión</a>',
 				success: 'success'
 			} 
 			
-			console.log("2")
 			let siteUrl = req.protocol + '://' + req.get('host')
 
-			console.log("3")
 			const msg = {
 				to: req.body.email.toLowerCase(),
 				from: 'neiro.torres@mailinator.com',
@@ -410,10 +407,7 @@ app.get('/home', (req, res)=>{
 				`
 			};
 
-			console.log(msg)
-
 			sgMail.send(msg)
-			console.log("4")
 			res.render('register', {
 				page: 'register',
 				pageTitle: 'Registrar nuevo usuario',
