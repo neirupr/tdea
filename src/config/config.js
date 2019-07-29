@@ -1,5 +1,3 @@
 process.env.PORT = process.env.PORT || 3000
-//process.env.URLDB = 'mongodb://localhost:27017/neiro'
-//process.env.URLDB = 'mongodb+srv://{{DBNAME}}:{{DBPASSWORD}}@neirokeyrus-fsp0w.mongodb.net/{{DBNAME}}?retryWrites=true&w=majority'
-process.env.URLDB = 'mongodb+srv://neiro:Keyrus.123@neirokeyrus-fsp0w.mongodb.net/neiro?retryWrites=true&w=majority'
-process.env.SENDGRID_API_KEY = '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'
+process.env.URLDB = process.env.URLDB || 'mongodb://localhost:27017/neiro'
+process.env.SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || 'nothing'
