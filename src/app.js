@@ -33,5 +33,7 @@ io.on('connection', client=>{
 })
 
 server.listen(process.env.PORT, ()=>{
-	console.log('Escuchando en el puerto ' + process.env.PORT)
+	console.log('Server running on port ' + process.env.PORT)
+	console.log('DB URL: ' + process.env.URLDB)
+	console.log('SENDGRID API KEY: ' + process.env.SENDGRID_API_KEY)
 })
